@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: assinatura-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha_segura
+      POSTGRES_DB: assinatura_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  app:
+    build: .
+    container_name: assinatura-app
+    depends_on:
+      - db
+    ports:
+      - "2222:22"
+      - "3000:3000"
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:senha_segura@db:5432/assinatura_db
+volumes:
+  postgres_data:
